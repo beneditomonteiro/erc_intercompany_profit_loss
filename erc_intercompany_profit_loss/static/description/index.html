@@ -11,16 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #f8f9fa; }
-        .erc-purple { color: #71639e; }
-        .erc-bg { background-color: #71639e; }
+        .erc-accent { color: #00897b; }
+        .erc-bg { background-color: #00897b; }
         .section-title { font-weight: 700; color: #333; margin-bottom: 1rem; }
         .section-subtitle { color: #666; max-width: 800px; margin: 0 auto 2rem; }
         .feature-card { border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; }
         .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
         .journal-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; margin: 4px; }
-        .flow-arrow { font-size: 1.5rem; color: #71639e; }
-        .account-code { font-family: 'Courier New', monospace; font-weight: 700; background: #f0eef5; padding: 2px 8px; border-radius: 4px; color: #71639e; }
-        .table-elim th { background-color: #71639e; color: white; font-weight: 600; }
+        .flow-arrow { font-size: 1.5rem; color: #00897b; }
+        .account-code { font-family: 'Courier New', monospace; font-weight: 700; background: #e0f2f1; padding: 2px 8px; border-radius: 4px; color: #00897b; }
+        .table-elim th { background-color: #00897b; color: white; font-weight: 600; }
         .table-elim td { vertical-align: middle; }
         .new-badge { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 6px; }
         .entry-dr { color: #1565c0; font-weight: 700; }
@@ -37,16 +37,16 @@
         </div>
         <div class="col-lg-9 text-end">
             <span class="me-3"><b>Companion to:</b></span>
-            <span class="badge rounded-pill px-3 py-2" style="background-color: #71639e !important; color: white; font-weight: 600;">erc_intercompany_je</span>
-            <span class="badge rounded-pill px-3 py-2" style="background-color: #28a745 !important; color: white; font-weight: 600;">3 Profit Types</span>
-            <span class="badge rounded-pill px-3 py-2" style="background-color: #ff6b35 !important; color: white; font-weight: 600;">1 Elimination Journal (ICPE)</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #00897b !important; color: white; font-weight: 600;">erc_intercompany_je</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #ef6c00 !important; color: white; font-weight: 600;">3 Profit Types</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #1565c0 !important; color: white; font-weight: 600;">ICPE Elimination Journal</span>
         </div>
     </div>
 </div>
 
 <!-- HERO: WHY THIS MODULE -->
 <div class="container py-5">
-    <div class="p-5 rounded-3" style="background: linear-gradient(135deg, #71639e 0%, #4facfe 100%); color: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    <div class="p-5 rounded-3" style="background: linear-gradient(135deg, #00897b 0%, #26c6da 100%); color: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.12);">
         <h1 class="text-center mb-2" style="font-weight: 700; font-size: 2.2rem;">Why This Module?</h1>
         <p class="text-center mb-4" style="opacity: 0.7;">Automatically capture intercompany profit margins at invoice post time and generate IFRS 10 / ASC 810-compliant elimination journal entries — directly inside Odoo, without spreadsheets.</p>
         <div class="row g-4 mt-3">
@@ -90,7 +90,7 @@
         <div class="row g-4 mt-3">
             <div class="col-md-4 text-center">
                 <div class="p-4 rounded-3 h-100" style="background: #f3e5f5; border: 1px solid #ce93d8;">
-                    <i class="fa fa-magic fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-magic fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 700;">On Install</h5>
                     <p class="text-muted small">Creates the <strong>ICPE</strong> general journal for each company, links it as the P&amp;L Elimination Journal, and seeds system parameters. One install — full infrastructure.</p>
                 </div>
@@ -125,8 +125,8 @@
                         <h2 class="section-title">The Problem This Module Solves</h2>
                     </div>
                     <div class="col-lg-6 mb-4">
-                        <div class="p-4 h-100" style="border-left:4px solid #71639e; background:#f9f7ff;">
-                            <h5 class="fw-700 mb-3" style="color:#71639e;"><i class="fa fa-exclamation-triangle me-2"></i>Unrealized Profit in Consolidated Inventory</h5>
+                        <div class="p-4 h-100" style="border-left:4px solid #00897b; background:#f0faf9;">
+                            <h5 class="fw-700 mb-3" style="color:#00897b;"><i class="fa fa-exclamation-triangle me-2"></i>Unrealized Profit in Consolidated Inventory</h5>
                             <p>When one group entity sells goods to a subsidiary, the seller records a profit — but that profit is <strong>not yet earned</strong>. The goods are still inside the group, sitting in the subsidiary's inventory at a price that includes the seller's margin.</p>
                             <p>Until the subsidiary sells those goods to an <strong>external customer</strong>, the embedded profit is unrealized. Yet without elimination, it quietly inflates:</p>
                             <ul>
@@ -152,7 +152,7 @@
                     </div>
                     <div class="col-12 mt-2">
                         <div class="p-3 text-center" style="background:#f0eef5; border-radius:8px;">
-                            <span style="color:#71639e; font-weight:600;"><i class="fa fa-check-circle me-2"></i>Applicable to any group structure — from a two-entity family business to a multi-subsidiary corporate group. If one legal entity sells to another within the same consolidation perimeter, this module is for you.</span>
+                            <span style="color:#00897b; font-weight:600;"><i class="fa fa-check-circle me-2"></i>Applicable to any group structure — from a two-entity family business to a multi-subsidiary corporate group. If one legal entity sells to another within the same consolidation perimeter, this module is for you.</span>
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm p-3">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">1</div>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#00897b;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">1</div>
                                 <h6 class="fw-bold mb-0">Trigger: Invoice Confirmed</h6>
                             </div>
                             <p class="small text-muted mb-0">The moment you click <strong>Confirm</strong> on a customer invoice, Odoo calls <code>account.move._post()</code>. This module hooks into that exact moment — after the invoice is legally posted — and runs silently in the background.</p>
@@ -179,7 +179,7 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm p-3">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">2</div>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#00897b;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">2</div>
                                 <h6 class="fw-bold mb-0">Is This Intercompany?</h6>
                             </div>
                             <p class="small text-muted mb-0">Three conditions are checked: move type is <code>out_invoice</code>, state is <code>posted</code>, and the partner has <strong>Is Intercompany = True</strong>. If all pass and "Auto-log P&amp;L on IC Invoice Post" is enabled on the company, the capture proceeds.</p>
@@ -190,7 +190,7 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm p-3">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">3</div>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#00897b;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">3</div>
                                 <h6 class="fw-bold mb-0">Which Config Applies?</h6>
                             </div>
                             <p class="small text-muted mb-0">The buyer company is identified by matching the invoice partner to a <code>res.company</code> record. The system then finds the active <strong>Elimination Config</strong> for that seller→buyer pair. If none exists, a warning is logged — the invoice is unaffected.</p>
@@ -398,7 +398,7 @@
             <!-- Step 1 -->
             <div class="col-auto">
                 <div class="p-3 rounded-3" style="background: #f3e5f5; border: 2px solid #ce93d8; min-width: 130px;">
-                    <i class="fa fa-file-invoice fa-2x mb-2 erc-purple"></i><br/>
+                    <i class="fa fa-file-invoice fa-2x mb-2 erc-accent"></i><br/>
                     <strong>IC Invoice Posted</strong><br/>
                     <small class="text-muted">Seller company</small>
                 </div>
@@ -443,7 +443,7 @@
         <div class="row g-4 mt-4">
             <div class="col-md-6">
                 <div class="p-4 rounded-3" style="background: #fafafa; border: 1px solid #eee;">
-                    <h6 style="font-weight: 700;"><i class="fa fa-info-circle me-2 erc-purple"></i>What the Profit Log Captures</h6>
+                    <h6 style="font-weight: 700;"><i class="fa fa-info-circle me-2 erc-accent"></i>What the Profit Log Captures</h6>
                     <ul class="small text-muted ps-3 mt-2 mb-0">
                         <li><strong>Seller unit price</strong> — from the invoice line at post time</li>
                         <li><strong>Seller cost price</strong> — <code>standard_price</code> snapshot at post time</li>
@@ -456,7 +456,7 @@
             </div>
             <div class="col-md-6">
                 <div class="p-4 rounded-3" style="background: #fafafa; border: 1px solid #eee;">
-                    <h6 style="font-weight: 700;"><i class="fa fa-calculator me-2 erc-purple"></i>Unrealized Profit Formulas</h6>
+                    <h6 style="font-weight: 700;"><i class="fa fa-calculator me-2 erc-accent"></i>Unrealized Profit Formulas</h6>
                     <table class="table table-sm small mb-0 mt-2">
                         <tbody>
                             <tr>
@@ -489,15 +489,15 @@
         <div class="row g-4 mt-3">
             <!-- Company Settings -->
             <div class="col-md-6">
-                <div class="p-4 rounded-3 h-100" style="border: 2px solid #71639e;">
-                    <h5 style="font-weight: 700; color: #71639e;"><i class="fa fa-building me-2"></i>1. Company Settings</h5>
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #00897b;">
+                    <h5 style="font-weight: 700; color: #00897b;"><i class="fa fa-building me-2"></i>1. Company Settings</h5>
                     <p class="small text-muted mt-2">Go to <em>Accounting &rarr; Settings &rarr; Intercompany P&amp;L Elimination</em>.</p>
                     <ul class="small text-muted ps-3 mt-3">
                         <li><strong>P&amp;L Elimination Journal</strong> — auto-set to <code>ICPE</code> on install; override if needed</li>
                         <li><strong>Auto-log P&amp;L on IC Invoice Post</strong> — toggle to disable automatic log creation</li>
                     </ul>
                     <div class="p-3 rounded-3 mt-3" style="background: #f3e5f5; border: 1px solid #ce93d8;">
-                        <p class="small mb-0"><i class="fa fa-magic me-1 erc-purple"></i> <strong>ICPE journal is created automatically on install</strong> — no manual journal creation required.</p>
+                        <p class="small mb-0"><i class="fa fa-magic me-1 erc-accent"></i> <strong>ICPE journal is created automatically on install</strong> — no manual journal creation required.</p>
                     </div>
                 </div>
             </div>
@@ -612,7 +612,7 @@
         <div class="row g-4 mt-3 align-items-center">
             <div class="col-md-5">
                 <div class="p-4 rounded-3" style="background: #fafafa; border: 2px solid #eee;">
-                    <h6 style="font-weight: 700;"><i class="fa fa-sliders-h me-2 erc-purple"></i>Wizard Parameters</h6>
+                    <h6 style="font-weight: 700;"><i class="fa fa-sliders-h me-2 erc-accent"></i>Wizard Parameters</h6>
                     <ul class="small text-muted ps-3 mt-3">
                         <li><strong>Company</strong> — seller or buyer company to filter by</li>
                         <li><strong>Date From / Date To</strong> — invoice date range</li>
@@ -621,7 +621,7 @@
                 </div>
             </div>
             <div class="col-md-2 text-center flow-arrow">
-                <i class="fa fa-arrow-right fa-2x erc-purple"></i>
+                <i class="fa fa-arrow-right fa-2x erc-accent"></i>
             </div>
             <div class="col-md-5">
                 <div class="p-4 rounded-3" style="background: #e8f5e9; border: 2px solid #a5d6a7;">
@@ -651,7 +651,7 @@
         <div class="row g-4 mt-3 justify-content-center">
             <div class="col-md-4 text-center">
                 <div class="p-4 rounded-3 h-100" style="background: #f3e5f5; border: 1px solid #ce93d8;">
-                    <i class="fa fa-balance-scale fa-3x mb-3 erc-purple"></i>
+                    <i class="fa fa-balance-scale fa-3x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 700;">Smart Button</h5>
                     <p class="small text-muted">A <em>P&amp;L Log</em> smart button appears on the invoice form showing the count. Click to jump directly to the profit log, see all lines, margins, and the linked elimination entry.</p>
                 </div>
@@ -685,8 +685,8 @@
         </p>
         <div class="row g-4 mt-3 align-items-start">
             <div class="col-md-6">
-                <div class="p-4 rounded-3 h-100" style="background: #fafafa; border: 2px solid #71639e;">
-                    <h5 style="font-weight: 700; color: #71639e;"><i class="fa fa-plug me-2"></i>erc_intercompany_je (Required Dependency)</h5>
+                <div class="p-4 rounded-3 h-100" style="background: #fafafa; border: 2px solid #00897b;">
+                    <h5 style="font-weight: 700; color: #00897b;"><i class="fa fa-plug me-2"></i>erc_intercompany_je (Required Dependency)</h5>
                     <ul class="small text-muted ps-3 mt-3">
                         <li>Detects IC partners via <code>is_intercompany</code> flag</li>
                         <li>Provides default GL accounts on <code>res.company</code> (AR, AP, COGS, Service Revenue, etc.)</li>
@@ -708,8 +708,8 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <span class="badge rounded-pill px-4 py-2 me-2" style="background-color: #71639e; color: white; font-size: 0.9rem;">erc_intercompany_je</span>
-            <i class="fa fa-plus erc-purple mx-2"></i>
+            <span class="badge rounded-pill px-4 py-2 me-2" style="background-color: #00897b; color: white; font-size: 0.9rem;">erc_intercompany_je</span>
+            <i class="fa fa-plus erc-accent mx-2"></i>
             <span class="badge rounded-pill px-4 py-2" style="background-color: #28a745; color: white; font-size: 0.9rem;">erc_intercompany_profit_loss</span>
             <span class="ms-3 text-muted small">= Complete intercompany accounting + elimination workflow</span>
         </div>
@@ -728,7 +728,7 @@
 
             <!-- 1 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">1. Company Settings — ICPE Journal</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">1. Company Settings — ICPE Journal</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_company_settings.png" alt="Company Settings — P&L Elimination Journal" style="max-width: 100%; display: block;"/>
                 </div>
@@ -737,7 +737,7 @@
 
             <!-- 2 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">2. Elimination Config per Company Pair</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">2. Elimination Config per Company Pair</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_elimination_config.png" alt="Elimination Config — GL accounts per seller-buyer pair" style="max-width: 100%; display: block;"/>
                 </div>
@@ -746,7 +746,7 @@
 
             <!-- 3 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">3. Profit Log List</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">3. Profit Log List</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_profit_log_list.png" alt="Profit Log List — all intercompany logs with state and totals" style="max-width: 100%; display: block;"/>
                 </div>
@@ -755,7 +755,7 @@
 
             <!-- 4 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">4. Profit Log Form — Header &amp; Totals</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">4. Profit Log Form — Header &amp; Totals</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_profit_log_form.png" alt="Profit Log Form — header totals and editable lines" style="max-width: 100%; display: block;"/>
                 </div>
@@ -764,7 +764,7 @@
 
             <!-- 5 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">5. Profit Lines — Margin &amp; Qty Tracking</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">5. Profit Lines — Margin &amp; Qty Tracking</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_profit_lines.png" alt="Profit Lines — cost snapshot, margin %, profit type, unrealized calc" style="max-width: 100%; display: block;"/>
                 </div>
@@ -773,7 +773,7 @@
 
             <!-- 6 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">6. ICPE Journal — Draft Elimination Entry</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">6. ICPE Journal — Draft Elimination Entry</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_elimination_entry.png" alt="ICPE Journal — draft elimination journal entry Dr/Cr" style="max-width: 100%; display: block;"/>
                 </div>
@@ -782,7 +782,7 @@
 
             <!-- 7 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">7. Generate Eliminations Wizard</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">7. Generate Eliminations Wizard</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_generate_wizard.png" alt="Generate Eliminations Wizard — batch by period" style="max-width: 100%; display: block;"/>
                 </div>
@@ -791,7 +791,7 @@
 
             <!-- 8 -->
             <div class="col-md-6 mb-5">
-                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">8. Smart Button on Invoice</h4>
+                <h4 class="mb-3" style="color: #00897b; font-weight: 600;">8. Smart Button on Invoice</h4>
                 <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
                     <img src="./assets/screenshots/plc_smart_button.png" alt="Smart button on account.move linking to P&L log" style="max-width: 100%; display: block;"/>
                 </div>
@@ -807,7 +807,7 @@
     <div class="row g-5">
         <div class="col-md-6">
             <div class="bg-white p-5 rounded-3 shadow-sm h-100" style="border: 1px solid #eee;">
-                <h2 class="mb-4" style="font-weight: 700; color: #71639e;">Professional Support</h2>
+                <h2 class="mb-4" style="font-weight: 700; color: #00897b;">Professional Support</h2>
                 <div class="d-flex align-items-center mb-3">
                     <div class="me-3 p-2 rounded-circle" style="background-color: #25d36615;">
                         <img src="./assets/icons/erc_whatsapp.png" width="24" height="24">
@@ -818,12 +818,12 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="me-3 p-2 rounded-circle" style="background-color: #71639e15;">
+                    <div class="me-3 p-2 rounded-circle" style="background-color: #00897b15;">
                         <img src="./assets/icons/erc_mail.png" width="24" height="24">
                     </div>
                     <div>
                         <h6 class="mb-0">Email Inquiry</h6>
-                        <a href="mailto:admin@erc-implementors.com" style="text-decoration: none; color: #71639e; font-weight: 600;">admin@erc-implementors.com</a>
+                        <a href="mailto:admin@erc-implementors.com" style="text-decoration: none; color: #00897b; font-weight: 600;">admin@erc-implementors.com</a>
                     </div>
                 </div>
             </div>
@@ -842,7 +842,7 @@
                     </li>
                     <li class="list-group-item border-0 px-0 d-flex justify-content-between">
                         <span class="text-muted">Website:</span>
-                        <a href="https://www.erc-implementors.com" target="_blank" rel="noopener noreferrer" style="color: #71639e; text-decoration: none; font-weight: 600;">erc-implementors.com</a>
+                        <a href="https://www.erc-implementors.com" target="_blank" rel="noopener noreferrer" style="color: #00897b; text-decoration: none; font-weight: 600;">erc-implementors.com</a>
                     </li>
                 </ul>
                 <p class="small text-muted mt-4">
@@ -867,7 +867,7 @@
             <!-- 1 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-tachometer-alt fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-tachometer-alt fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Dashboard KPIs</h5>
                     <p class="text-muted small">Three live KPIs on the Settings page: <strong>pending log count</strong>, <strong>total unrealized profit</strong>, and <strong>last elimination date</strong>. Click the pending count to jump straight to the log list.</p>
                 </div>
@@ -875,7 +875,7 @@
             <!-- 2 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-comments fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-comments fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Chatter &amp; Tracking</h5>
                     <p class="text-muted small">Profit logs inherit <code>mail.thread</code> with state tracking. Every elimination generation, reversal, and status change is <strong>posted to chatter</strong> for full team visibility and audit compliance.</p>
                 </div>
@@ -883,7 +883,7 @@
             <!-- 3 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-magic fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-magic fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Auto-Logging on Invoice Post</h5>
                     <p class="text-muted small">Post an IC customer invoice and a profit log is <strong>created automatically</strong> in draft with all profit lines pre-populated. Toggle on/off per company. Eliminates 80%+ of manual data entry.</p>
                 </div>
@@ -891,7 +891,7 @@
             <!-- 4 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-truck fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-truck fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Stock Delivery Sync</h5>
                     <p class="text-muted small">When the buyer ships goods to external customers, <strong>sold quantities update automatically</strong> on matching profit lines. FIFO matching within a 90-day window. Full picking traceability via M2M link.</p>
                 </div>
@@ -899,7 +899,7 @@
             <!-- 5 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-boxes fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-boxes fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Inventory Tracking Fields</h5>
                     <p class="text-muted small">Three new fields per profit line: <strong>qty sold external</strong>, <strong>qty still in stock</strong> (computed), and <strong>qty auto-sold</strong> (from deliveries). Dynamic unrealized profit based on what&rsquo;s actually still in inventory.</p>
                 </div>
@@ -907,7 +907,7 @@
             <!-- 6 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-undo-alt fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-undo-alt fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Batch Reverse Wizard</h5>
                     <p class="text-muted small">Reverse elimination entries for an entire period with one wizard. Filter by <strong>date range</strong> and seller/buyer config. Live preview of affected logs before execution. Skips errors, reports results.</p>
                 </div>
@@ -915,7 +915,7 @@
             <!-- 7 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-file-pdf fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-file-pdf fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">PDF Elimination Report</h5>
                     <p class="text-muted small">Comprehensive QWeb PDF report with product-level detail: qty, seller price, cost, margin %, profit type, unrealized amount. <strong>Auto-attached</strong> to elimination journal entries for audit.</p>
                 </div>
@@ -923,7 +923,7 @@
             <!-- 8 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-balance-scale fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-balance-scale fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Smart Button on Invoices</h5>
                     <p class="text-muted small">IC invoices show a <strong>smart button</strong> with the count of related profit logs. One click navigates to the filtered log list. Only visible when logs exist.</p>
                 </div>
@@ -931,7 +931,7 @@
             <!-- 9 -->
             <div class="col-md-4">
                 <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
-                    <i class="fa fa-exchange-alt fa-2x mb-3 erc-purple"></i>
+                    <i class="fa fa-exchange-alt fa-2x mb-3 erc-accent"></i>
                     <h5 style="font-weight: 600;">Cascade Reversals</h5>
                     <p class="text-muted small">Reverse a source IC invoice and all related profit logs are <strong>automatically reversed</strong>. No orphaned elimination entries. Ensures GL consistency across the chain.</p>
                 </div>
@@ -941,13 +941,13 @@
 </div>
 
 <!-- FOOTER -->
-<div class="container-fluid py-5 mt-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 30%, #fff3e0 70%, #f3e5f5 100%); border-top: 3px solid #71639e;">
+<div class="container-fluid py-5 mt-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e0f2f1 30%, #fff3e0 70%, #e0f7fa 100%); border-top: 3px solid #00897b;">
     <div class="container text-center">
         <img src="icon.png" style="width: 60px; height: 60px; margin-bottom: 20px;" alt="ERC Logo">
         <h5 style="letter-spacing: 1px; font-weight: 700; color: #333;">ERC IMPLEMENTORS LTDA</h5>
         <p class="small mt-2" style="color: #666;">Professional Odoo Solutions &amp; Localization Experts</p>
         <div class="mt-3 mb-3">
-            <span class="badge rounded-pill px-3 py-2 me-1" style="background-color: #71639e; color: white; font-weight: 600;">Odoo 19</span>
+            <span class="badge rounded-pill px-3 py-2 me-1" style="background-color: #00897b; color: white; font-weight: 600;">Odoo 19</span>
             <span class="badge rounded-pill px-3 py-2 me-1" style="background-color: #28a745; color: white; font-weight: 600;">Enterprise Ready</span>
             <span class="badge rounded-pill px-3 py-2" style="background-color: #ff6b35; color: white; font-weight: 600;">Companion Module</span>
         </div>
