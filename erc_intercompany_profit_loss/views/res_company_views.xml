@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add P&L settings to res.config.settings (Accounting tab) -->
+    <record id="view_res_config_settings_plc" model="ir.ui.view">
+        <field name="name">res.config.settings.plc</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="Intercompany P&amp;L Elimination" name="intercompany_plc_settings">
+                    <setting string="P&amp;L Elimination Journal" help="General journal for intercompany profit/loss elimination entries (code: ICPE).">
+                        <field name="interco_plc_journal_id"/>
+                    </setting>
+                    <setting string="Auto-log P&amp;L on IC Invoice Post" help="Automatically create a profit log when an intercompany customer invoice is posted.">
+                        <field name="interco_plc_auto_log_on_post"/>
+                    </setting>
+                    <setting string="P&amp;L Summary">
+                        <div class="content-group">
+                            <div class="row mt4">
+                                <label class="col-lg-4 o_light_label" for="plc_pending_log_count" string="Pending Logs"/>
+                                <field name="plc_pending_log_count" readonly="True" nolabel="1"/>
+                            </div>
+                            <div class="row mt4">
+                                <label class="col-lg-4 o_light_label" for="plc_total_unrealized" string="Total Unrealized"/>
+                                <field name="plc_total_unrealized" readonly="True" nolabel="1" widget="monetary"/>
+                            </div>
+                            <div class="row mt4">
+                                <label class="col-lg-4 o_light_label" for="plc_last_elimination_date" string="Last Elimination"/>
+                                <field name="plc_last_elimination_date" readonly="True" nolabel="1"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

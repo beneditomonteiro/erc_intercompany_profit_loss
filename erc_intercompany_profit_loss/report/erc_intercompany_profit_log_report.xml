@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_plc_profit_log" model="ir.actions.report">
+        <field name="name">Intercompany P&amp;L Profit Log</field>
+        <field name="model">erc.intercompany.profit.log</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">erc_intercompany_profit_loss.report_plc_profit_log_template</field>
+        <field name="report_file">erc_intercompany_profit_loss.report_plc_profit_log_template</field>
+        <field name="binding_model_id" ref="model_erc_intercompany_profit_log"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

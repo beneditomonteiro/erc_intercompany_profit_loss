@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top-level menu under Accounting -->
+    <menuitem
+        id="menu_intercompany_plc_root"
+        name="Intercompany P&amp;L"
+        parent="account.menu_finance"
+        sequence="99"
+        groups="account.group_account_readonly"
+    />
+
+    <menuitem
+        id="menu_intercompany_plc_profit_logs"
+        name="Profit Logs"
+        parent="menu_intercompany_plc_root"
+        action="action_erc_intercompany_profit_log"
+        sequence="10"
+        groups="account.group_account_readonly"
+    />
+
+    <menuitem
+        id="menu_intercompany_plc_config"
+        name="Elimination Config"
+        parent="menu_intercompany_plc_root"
+        action="action_erc_intercompany_plc"
+        sequence="20"
+        groups="account.group_account_manager"
+    />
+
+    <menuitem
+        id="menu_intercompany_plc_generate"
+        name="Generate Eliminations"
+        parent="menu_intercompany_plc_root"
+        action="action_wizard_generate_elimination"
+        sequence="30"
+        groups="account.group_account_manager"
+    />
+
+    <menuitem
+        id="menu_intercompany_plc_reverse"
+        name="Reverse Eliminations"
+        parent="menu_intercompany_plc_root"
+        action="action_wizard_reverse_elimination"
+        sequence="35"
+        groups="account.group_account_manager"
+    />
+
+</odoo>

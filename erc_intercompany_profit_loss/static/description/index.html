@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ERC Intercompany P&amp;L Elimination (Odoo 19)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #f8f9fa; }
+        .erc-purple { color: #71639e; }
+        .erc-bg { background-color: #71639e; }
+        .section-title { font-weight: 700; color: #333; margin-bottom: 1rem; }
+        .section-subtitle { color: #666; max-width: 800px; margin: 0 auto 2rem; }
+        .feature-card { border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important; }
+        .journal-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; margin: 4px; }
+        .flow-arrow { font-size: 1.5rem; color: #71639e; }
+        .account-code { font-family: 'Courier New', monospace; font-weight: 700; background: #f0eef5; padding: 2px 8px; border-radius: 4px; color: #71639e; }
+        .table-elim th { background-color: #71639e; color: white; font-weight: 600; }
+        .table-elim td { vertical-align: middle; }
+        .new-badge { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 6px; }
+        .entry-dr { color: #1565c0; font-weight: 700; }
+        .entry-cr { color: #2e7d32; font-weight: 700; padding-left: 24px; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="container-fluid py-4" style="background-color: white; border-bottom: 2px solid #e9ecef;">
+    <div class="row align-items-center px-4">
+        <div class="col-lg-3 text-start">
+            <img src="icon.png" style="width: 80px; height: 80px;" alt="ERC Logo">
+        </div>
+        <div class="col-lg-9 text-end">
+            <span class="me-3"><b>Companion to:</b></span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #71639e !important; color: white; font-weight: 600;">erc_intercompany_je</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #28a745 !important; color: white; font-weight: 600;">3 Profit Types</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #ff6b35 !important; color: white; font-weight: 600;">1 Elimination Journal (ICPE)</span>
+        </div>
+    </div>
+</div>
+
+<!-- HERO: WHY THIS MODULE -->
+<div class="container py-5">
+    <div class="p-5 rounded-3" style="background: linear-gradient(135deg, #71639e 0%, #4facfe 100%); color: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <h1 class="text-center mb-2" style="font-weight: 700; font-size: 2.2rem;">Why This Module?</h1>
+        <p class="text-center mb-4" style="opacity: 0.7;">Automatically capture intercompany profit margins at invoice post time and generate IFRS 10 / ASC 810-compliant elimination journal entries — directly inside Odoo, without spreadsheets.</p>
+        <div class="row g-4 mt-3">
+            <div class="col-md-4 text-center">
+                <img src="./assets/icons/erc_feature_secure.png" alt="" width="60" class="mb-3" style="filter: brightness(10);">
+                <h5 style="font-weight: 700; color: #ff4444;">The Problem</h5>
+                <p style="color: #1a1a2e;">When Company A sells goods to Company B within the same group, the <strong>profit on that sale is unrealized</strong> from a consolidated perspective — until Company B sells to an external customer. Without elimination, the group overstates both revenue and inventory.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="./assets/icons/erc_feature_rocket.png" alt="" width="60" class="mb-3">
+                <h5 style="font-weight: 700; color: #00c853;">The Solution</h5>
+                <p style="color: #1a1a2e;">Automatically logs the margin embedded in every intercompany invoice line. Tracks how much of the purchased stock has been sold externally. Generates <strong>draft elimination entries</strong> ready for the accountant's review — one journal, full audit trail.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="./assets/icons/erc_feature_building.png" alt="" width="60" class="mb-3">
+                <h5 style="font-weight: 700; color: #ff9100;">Enterprise Result</h5>
+                <p style="color: #1a1a2e;">Consolidated P&amp;L that passes group audit. Elimination entries isolated in the <strong>ICPE journal</strong> — filter it to see every intercompany profit reversal for any period at a glance. Zero manual calculation.</p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <div style="background: white; border-radius: 12px; padding: 20px 30px; display: inline-block; margin-top: 10px;">
+                <p style="margin: 0 0 8px 0; font-size: 18px; font-weight: 700; color: #ff6b35;">Try Our Live Demo</p>
+                <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;"><strong>URL:</strong> <code style="background: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 13px;">https://erc-implementors.me/web/database/selector</code></p>
+                <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;"><strong>Database:</strong> <code style="background: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 13px;">erc_intercompany_us</code></p>
+                <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;"><strong>Login:</strong> <code style="background: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 13px;">ERC_ME</code></p>
+                <p style="margin: 0; font-size: 14px; color: #333;"><strong>Password:</strong> <code style="background: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 13px;">demo</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     AUTOMATED PERSISTENCE & SETUP
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Automated Persistence &amp; Setup</h2>
+        <p class="text-center section-subtitle">
+            Install once — the ICPE journal and all defaults are created automatically and survive every upgrade.
+        </p>
+        <div class="row g-4 mt-3">
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #f3e5f5; border: 1px solid #ce93d8;">
+                    <i class="fa fa-magic fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 700;">On Install</h5>
+                    <p class="text-muted small">Creates the <strong>ICPE</strong> general journal for each company, links it as the P&amp;L Elimination Journal, and seeds system parameters. One install — full infrastructure.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #e3f2fd; border: 1px solid #90caf9;">
+                    <i class="fa fa-sync fa-2x mb-3" style="color: #1565c0;"></i>
+                    <h5 style="font-weight: 700;">On Upgrade</h5>
+                    <p class="text-muted small">The data file with <code>noupdate="0"</code> re-runs <code>_plc_ensure_icpe_journal()</code> on every <code>odoo -u</code>. New companies added since install are automatically provisioned.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #fff8e1; border: 1px solid #ffe082;">
+                    <i class="fa fa-eye fa-2x mb-3" style="color: #f57f17;"></i>
+                    <h5 style="font-weight: 700;">On Every Invoice Post</h5>
+                    <p class="text-muted small">When an intercompany customer invoice is posted, a <strong>Profit Log</strong> is auto-created with lines for each product — capturing cost price, margin, and profit type at that exact moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- ================================================================
+             SECTION: THE PROBLEM & HOW IT WORKS
+             ================================================================ -->
+        <section class="py-5" style="background:#fff;">
+            <div class="container">
+
+                <!-- THE PROBLEM -->
+                <div class="row mb-5">
+                    <div class="col-12 text-center mb-4">
+                        <h2 class="section-title">The Problem This Module Solves</h2>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="p-4 h-100" style="border-left:4px solid #71639e; background:#f9f7ff;">
+                            <h5 class="fw-700 mb-3" style="color:#71639e;"><i class="fa fa-exclamation-triangle me-2"></i>Unrealized Profit in Consolidated Inventory</h5>
+                            <p>When one group entity sells goods to a subsidiary, the seller records a profit — but that profit is <strong>not yet earned</strong>. The goods are still inside the group, sitting in the subsidiary's inventory at a price that includes the seller's margin.</p>
+                            <p>Until the subsidiary sells those goods to an <strong>external customer</strong>, the embedded profit is unrealized. Yet without elimination, it quietly inflates:</p>
+                            <ul>
+                                <li><strong>Inventory value</strong> on the consolidated balance sheet</li>
+                                <li><strong>Revenue and gross profit</strong> on the consolidated P&amp;L</li>
+                                <li><strong>Inter-entity payables and receivables</strong> that cancel each other out</li>
+                            </ul>
+                            <p class="mb-0">This distorts every financial ratio your investors, auditors, and regulators rely on.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="p-4 h-100" style="border-left:4px solid #017E84; background:#f0fafb;">
+                            <h5 class="fw-700 mb-3" style="color:#017E84;"><i class="fa fa-gavel me-2"></i>Mandatory Under International Standards</h5>
+                            <p>The fix is mandatory under <strong>IFRS 10</strong>, <strong>US GAAP ASC 810</strong>, and equivalent local GAAP: unrealized intercompany profit must be eliminated from consolidated statements — period.</p>
+                            <p><strong>Why it's hard in practice:</strong> most ERPs handle journal routing. None automate the profit tracking and elimination calculation:</p>
+                            <ul>
+                                <li>How much margin did the seller embed in this shipment?</li>
+                                <li>How much of that stock has the buyer actually sold on?</li>
+                                <li>What portion is still sitting in the warehouse — unrealized?</li>
+                            </ul>
+                            <p class="mb-0">Accountants typically do this in spreadsheets, manually, at quarter-end. Error-prone, audit-unfriendly, and invisible to management during the period.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="p-3 text-center" style="background:#f0eef5; border-radius:8px;">
+                            <span style="color:#71639e; font-weight:600;"><i class="fa fa-check-circle me-2"></i>Applicable to any group structure — from a two-entity family business to a multi-subsidiary corporate group. If one legal entity sells to another within the same consolidation perimeter, this module is for you.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOW IT WORKS -->
+                <div class="row">
+                    <div class="col-12 text-center mb-4">
+                        <h2 class="section-title">How Automatic Margin Capture Works</h2>
+                        <p class="section-subtitle">Complete transparency into what happens when you post an intercompany invoice.</p>
+                    </div>
+
+                    <!-- Step 1 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">1</div>
+                                <h6 class="fw-bold mb-0">Trigger: Invoice Confirmed</h6>
+                            </div>
+                            <p class="small text-muted mb-0">The moment you click <strong>Confirm</strong> on a customer invoice, Odoo calls <code>account.move._post()</code>. This module hooks into that exact moment — after the invoice is legally posted — and runs silently in the background.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">2</div>
+                                <h6 class="fw-bold mb-0">Is This Intercompany?</h6>
+                            </div>
+                            <p class="small text-muted mb-0">Three conditions are checked: move type is <code>out_invoice</code>, state is <code>posted</code>, and the partner has <strong>Is Intercompany = True</strong>. If all pass and "Auto-log P&amp;L on IC Invoice Post" is enabled on the company, the capture proceeds.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#71639e;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">3</div>
+                                <h6 class="fw-bold mb-0">Which Config Applies?</h6>
+                            </div>
+                            <p class="small text-muted mb-0">The buyer company is identified by matching the invoice partner to a <code>res.company</code> record. The system then finds the active <strong>Elimination Config</strong> for that seller→buyer pair. If none exists, a warning is logged — the invoice is unaffected.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#017E84;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">4</div>
+                                <h6 class="fw-bold mb-0">Cost Snapshot at Post Time</h6>
+                            </div>
+                            <p class="small text-muted mb-0">For each product line, the system reads <code>price_unit</code> (transfer price) and <code>product.standard_price</code> (cost) <strong>at this exact moment</strong>. The cost is snapshotted because <code>standard_price</code> will change with future stock movements — this is the only moment it can be captured accurately.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#017E84;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">5</div>
+                                <h6 class="fw-bold mb-0">Margin Calculated Per Line</h6>
+                            </div>
+                            <p class="small text-muted mb-0">Each line immediately computes: <code>Margin = Qty × (Unit Price − Cost)</code> and <code>Margin % = Margin ÷ Revenue × 100</code>. Products are auto-classified: <em>service</em> type → Service profit type; all others → Goods Unsold (accountant can update as buyer sells through).</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm p-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#017E84;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">6</div>
+                                <h6 class="fw-bold mb-0">Draft Log Created — Not the Entry</h6>
+                            </div>
+                            <p class="small text-muted mb-0">A <strong>Draft Profit Log</strong> is created and linked to the invoice (visible via smart button). The elimination journal entry is <strong>not</strong> posted automatically — it is generated on demand, reviewed by your accountant, and posted at period-end. The calculation is done; the decision is yours.</p>
+                        </div>
+                    </div>
+
+                    <!-- Formula callout -->
+                    <div class="col-12 mt-2">
+                        <div class="p-4" style="background:#1e1e2e; border-radius:8px; color:#cdd6f4;">
+                            <div class="row">
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <div class="small text-uppercase mb-1" style="color:#cba6f7; letter-spacing:.05em;">Goods — Unsold Inventory</div>
+                                    <code style="color:#a6e3a1;">Unrealized = (Stock Qty × Unit Price) × Margin% ÷ (100 + Margin%)</code>
+                                </div>
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <div class="small text-uppercase mb-1" style="color:#89dceb; letter-spacing:.05em;">Goods — Sold to External</div>
+                                    <code style="color:#a6e3a1;">Unrealized = (Sold Qty × Cost Price) × Margin% ÷ 100</code>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="small text-uppercase mb-1" style="color:#fab387; letter-spacing:.05em;">Service / Expense</div>
+                                    <code style="color:#a6e3a1;">Unrealized = Full Margin Amount</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+<!-- ============================================================
+     KEY PRODUCT HIGHLIGHTS (6 CARDS)
+     ============================================================ -->
+<div class="container py-5">
+    <h2 class="text-center section-title mb-2">Key Product Highlights</h2>
+    <p class="text-center section-subtitle">Everything your consolidation team needs to eliminate intercompany profit — out of the box.</p>
+    <div class="row g-4 text-center">
+        <!-- 1 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_dynamic.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">Auto Profit Log on Invoice Post</h4>
+                <p class="text-muted">Every time an intercompany invoice is posted, a <strong>Profit Log</strong> is created automatically — capturing seller unit price, seller cost price (at post time), margin %, and profit type per line. Zero manual effort.</p>
+            </div>
+        </div>
+        <!-- 2 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_routing.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">3 Profit Types<span class="new-badge">Smart</span></h4>
+                <p class="text-muted">Each invoice line is classified automatically: <strong>Goods — Unsold Inventory</strong> (stock still held), <strong>Goods — Sold to External</strong> (realized portion), or <strong>Service / Expense</strong> (full margin). The correct elimination entry pattern is applied per type.</p>
+            </div>
+        </div>
+        <!-- 3 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_shield.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">Single ICPE Journal</h4>
+                <p class="text-muted">All elimination entries — across all seller→buyer pairs, all periods — land in one dedicated <strong>ICPE</strong> general journal per company. The accountant filters by journal to see every elimination at a glance. No scattering across multiple journals.</p>
+            </div>
+        </div>
+        <!-- 4 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_bom.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">Draft → Review → Post Workflow</h4>
+                <p class="text-muted">Elimination entries are always created as <strong>Draft</strong>. The accountant reviews the Dr/Cr lines, adjusts qty sold externally if needed, then posts. The Profit Log state tracks the full lifecycle: Draft → Pending → Posted → Reversed.</p>
+            </div>
+        </div>
+        <!-- 5 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_partner.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">Batch Wizard by Period</h4>
+                <p class="text-muted">Use the <strong>Generate Eliminations</strong> wizard to batch-process all pending logs for a period and company in one action. Filter by specific seller→buyer config pairs. Get a list of all generated entries for review.</p>
+            </div>
+        </div>
+        <!-- 6 -->
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                <img src="./assets/icons/erc_feature_global.png" alt="" width="60" class="mb-3">
+                <h4 style="font-weight: 600;">Configurable GL Accounts per Pair</h4>
+                <p class="text-muted">For each seller→buyer company pair, configure 7 dedicated GL accounts (buyer AP, Inventory, Sales, COGS, Expense + seller AR, Service Revenue). Use <strong>Auto-Populate</strong> to copy defaults from <em>erc_intercompany_je</em> in one click.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     3 PROFIT TYPES & ELIMINATION PATTERNS
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">3 Profit Types &amp; Elimination Journal Entry Patterns</h2>
+        <p class="text-center section-subtitle">
+            Each profit type generates a specific Dr/Cr pattern in the ICPE journal. All entries created as Draft.
+        </p>
+
+        <div class="row g-4 mt-3">
+            <!-- TYPE 1 -->
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #1565c0; background: #e3f2fd;">
+                    <h5 class="text-center mb-3" style="font-weight: 700; color: #1565c0;">
+                        <i class="fa fa-boxes me-2"></i>1. Goods — Unsold Inventory
+                    </h5>
+                    <p class="small text-muted text-center">IC goods still held in buyer's stock. Profit is unrealized until sold externally.</p>
+                    <div class="p-3 rounded-3 mt-3" style="background: white; border: 1px solid #90caf9; font-size: 0.85rem;">
+                        <div class="entry-dr">Dr &nbsp;AP Intercompany</div>
+                        <div class="entry-cr">Cr &nbsp;&nbsp;Inventory</div>
+                        <hr style="margin: 8px 0; border-color: #e0e0e0;"/>
+                        <p class="text-muted mb-0 small">Amount: <code>qty_in_stock × unit_price × margin% / (100 + margin%)</code></p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <span class="journal-badge" style="background: #bbdefb; color: #0d47a1;">Buyer Side Only</span>
+                    </div>
+                </div>
+            </div>
+            <!-- TYPE 2 -->
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #2e7d32; background: #e8f5e9;">
+                    <h5 class="text-center mb-3" style="font-weight: 700; color: #2e7d32;">
+                        <i class="fa fa-shopping-cart me-2"></i>2. Goods — Sold to External
+                    </h5>
+                    <p class="small text-muted text-center">IC goods the buyer has already sold to external customers. Margin embedded in COGS is eliminated.</p>
+                    <div class="p-3 rounded-3 mt-3" style="background: white; border: 1px solid #a5d6a7; font-size: 0.85rem;">
+                        <div class="entry-dr">Dr &nbsp;Product Sales</div>
+                        <div class="entry-cr">Cr &nbsp;&nbsp;COGS</div>
+                        <hr style="margin: 8px 0; border-color: #e0e0e0;"/>
+                        <p class="text-muted mb-0 small">Amount: <code>qty_sold × cost_price × margin% / 100</code></p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <span class="journal-badge" style="background: #c8e6c9; color: #1b5e20;">Buyer Side Only</span>
+                    </div>
+                </div>
+            </div>
+            <!-- TYPE 3 -->
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #f57f17; background: #fff8e1;">
+                    <h5 class="text-center mb-3" style="font-weight: 700; color: #e65100;">
+                        <i class="fa fa-concierge-bell me-2"></i>3. Service / Expense
+                    </h5>
+                    <p class="small text-muted text-center">IC services rendered. Full margin eliminated on both the seller (revenue) and buyer (expense) sides.</p>
+                    <div class="p-3 rounded-3 mt-3" style="background: white; border: 1px solid #ffe082; font-size: 0.85rem;">
+                        <p class="mb-1 text-muted small" style="font-weight: 600;">Buyer:</p>
+                        <div class="entry-dr">Dr &nbsp;AP Intercompany</div>
+                        <div class="entry-cr">Cr &nbsp;&nbsp;Expense</div>
+                        <p class="mt-2 mb-1 text-muted small" style="font-weight: 600;">Seller:</p>
+                        <div class="entry-dr">Dr &nbsp;Services Rendered</div>
+                        <div class="entry-cr">Cr &nbsp;&nbsp;AR Intercompany</div>
+                        <hr style="margin: 8px 0; border-color: #e0e0e0;"/>
+                        <p class="text-muted mb-0 small">Amount: full seller margin amount</p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <span class="journal-badge" style="background: #ffe082; color: #e65100;">Both Sides</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     PROFIT LOG LIFECYCLE
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Profit Log Lifecycle</h2>
+        <p class="text-center section-subtitle">
+            From invoice post to consolidated elimination — every step is tracked and auditable.
+        </p>
+        <div class="row g-3 align-items-center justify-content-center text-center mt-4">
+            <!-- Step 1 -->
+            <div class="col-auto">
+                <div class="p-3 rounded-3" style="background: #f3e5f5; border: 2px solid #ce93d8; min-width: 130px;">
+                    <i class="fa fa-file-invoice fa-2x mb-2 erc-purple"></i><br/>
+                    <strong>IC Invoice Posted</strong><br/>
+                    <small class="text-muted">Seller company</small>
+                </div>
+            </div>
+            <div class="col-auto flow-arrow"><i class="fa fa-arrow-right"></i></div>
+            <!-- Step 2 -->
+            <div class="col-auto">
+                <div class="p-3 rounded-3" style="background: #e3f2fd; border: 2px solid #90caf9; min-width: 130px;">
+                    <i class="fa fa-clipboard-list fa-2x mb-2" style="color: #1565c0;"></i><br/>
+                    <strong>Profit Log Created</strong><br/>
+                    <small class="badge" style="background: #bbdefb; color: #0d47a1;">Draft</small>
+                </div>
+            </div>
+            <div class="col-auto flow-arrow"><i class="fa fa-arrow-right"></i></div>
+            <!-- Step 3 -->
+            <div class="col-auto">
+                <div class="p-3 rounded-3" style="background: #fff8e1; border: 2px solid #ffe082; min-width: 130px;">
+                    <i class="fa fa-edit fa-2x mb-2" style="color: #f57f17;"></i><br/>
+                    <strong>Update Qty Sold</strong><br/>
+                    <small class="text-muted">Buyer updates stock</small>
+                </div>
+            </div>
+            <div class="col-auto flow-arrow"><i class="fa fa-arrow-right"></i></div>
+            <!-- Step 4 -->
+            <div class="col-auto">
+                <div class="p-3 rounded-3" style="background: #e8f5e9; border: 2px solid #a5d6a7; min-width: 130px;">
+                    <i class="fa fa-magic fa-2x mb-2" style="color: #2e7d32;"></i><br/>
+                    <strong>Generate Entry</strong><br/>
+                    <small class="badge" style="background: #c8e6c9; color: #1b5e20;">Pending</small>
+                </div>
+            </div>
+            <div class="col-auto flow-arrow"><i class="fa fa-arrow-right"></i></div>
+            <!-- Step 5 -->
+            <div class="col-auto">
+                <div class="p-3 rounded-3" style="background: #e8f5e9; border: 2px solid #2e7d32; min-width: 130px;">
+                    <i class="fa fa-check-circle fa-2x mb-2" style="color: #2e7d32;"></i><br/>
+                    <strong>Post Entry</strong><br/>
+                    <small class="badge bg-success text-white">Posted</small>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="p-4 rounded-3" style="background: #fafafa; border: 1px solid #eee;">
+                    <h6 style="font-weight: 700;"><i class="fa fa-info-circle me-2 erc-purple"></i>What the Profit Log Captures</h6>
+                    <ul class="small text-muted ps-3 mt-2 mb-0">
+                        <li><strong>Seller unit price</strong> — from the invoice line at post time</li>
+                        <li><strong>Seller cost price</strong> — <code>standard_price</code> snapshot at post time</li>
+                        <li><strong>Margin amount &amp; %</strong> — computed and stored</li>
+                        <li><strong>Profit type</strong> — auto-classified, editable by user</li>
+                        <li><strong>Qty sold externally</strong> — user-maintained, drives unrealized calc</li>
+                        <li><strong>Unrealized profit</strong> — computed per type formula</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 rounded-3" style="background: #fafafa; border: 1px solid #eee;">
+                    <h6 style="font-weight: 700;"><i class="fa fa-calculator me-2 erc-purple"></i>Unrealized Profit Formulas</h6>
+                    <table class="table table-sm small mb-0 mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">Goods Unsold</td>
+                                <td><code>stock_value × margin% / (100 + margin%)</code></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Goods Sold</td>
+                                <td><code>sold_cost × margin% / 100</code></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Service</td>
+                                <td><code>full margin amount</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     CONFIGURATION AT A GLANCE
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Configuration at a Glance</h2>
+        <p class="text-center section-subtitle">Two configuration points — company settings and per-pair GL accounts. That's it.</p>
+        <div class="row g-4 mt-3">
+            <!-- Company Settings -->
+            <div class="col-md-6">
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #71639e;">
+                    <h5 style="font-weight: 700; color: #71639e;"><i class="fa fa-building me-2"></i>1. Company Settings</h5>
+                    <p class="small text-muted mt-2">Go to <em>Accounting &rarr; Settings &rarr; Intercompany P&amp;L Elimination</em>.</p>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li><strong>P&amp;L Elimination Journal</strong> — auto-set to <code>ICPE</code> on install; override if needed</li>
+                        <li><strong>Auto-log P&amp;L on IC Invoice Post</strong> — toggle to disable automatic log creation</li>
+                    </ul>
+                    <div class="p-3 rounded-3 mt-3" style="background: #f3e5f5; border: 1px solid #ce93d8;">
+                        <p class="small mb-0"><i class="fa fa-magic me-1 erc-purple"></i> <strong>ICPE journal is created automatically on install</strong> — no manual journal creation required.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Per-Pair Config -->
+            <div class="col-md-6">
+                <div class="p-4 rounded-3 h-100" style="border: 2px solid #ff6b35;">
+                    <h5 style="font-weight: 700; color: #ff6b35;"><i class="fa fa-exchange-alt me-2"></i>2. Elimination Config (per Seller → Buyer Pair)</h5>
+                    <p class="small text-muted mt-2">Go to <em>Accounting &rarr; Intercompany P&amp;L &rarr; Elimination Config</em>. One record per company pair.</p>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li><strong>Buyer AP Intercompany</strong> — payable account</li>
+                        <li><strong>Buyer Inventory</strong> — stock/asset account</li>
+                        <li><strong>Buyer Product Sales</strong> — revenue account</li>
+                        <li><strong>Buyer COGS</strong> — cost of goods account</li>
+                        <li><strong>Buyer Expense</strong> — service expense account</li>
+                        <li><strong>Seller AR Intercompany</strong> — receivable account</li>
+                        <li><strong>Seller Services Revenue</strong> — revenue account</li>
+                    </ul>
+                    <div class="p-3 rounded-3 mt-3" style="background: #fff3e0; border: 1px solid #ffb74d;">
+                        <p class="small mb-0"><i class="fa fa-bolt me-1" style="color: #ff6b35;"></i> <strong>Auto-Populate button</strong> copies defaults from <em>erc_intercompany_je</em> company settings in one click.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     COMPLETE GL ACCOUNT MAP
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Complete GL Account Map</h2>
+        <p class="text-center section-subtitle">
+            Seven configurable accounts per seller→buyer pair. Each has a clear role in the elimination entry.
+        </p>
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-elim text-center">
+                <thead>
+                    <tr>
+                        <th>Account Field</th>
+                        <th>Side</th>
+                        <th>Account Type</th>
+                        <th>Dr / Cr</th>
+                        <th>Used For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Buyer — AP Intercompany</strong></td>
+                        <td><span class="badge bg-primary">Buyer</span></td>
+                        <td>Liability / Payable</td>
+                        <td><span class="entry-dr">Dr</span></td>
+                        <td>Goods Unsold, Service</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td><strong>Buyer — Inventory</strong></td>
+                        <td><span class="badge bg-primary">Buyer</span></td>
+                        <td>Asset</td>
+                        <td><span class="entry-cr">Cr</span></td>
+                        <td>Goods Unsold</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Buyer — Product Sales</strong></td>
+                        <td><span class="badge bg-primary">Buyer</span></td>
+                        <td>Income</td>
+                        <td><span class="entry-dr">Dr</span></td>
+                        <td>Goods Sold to External</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td><strong>Buyer — COGS</strong></td>
+                        <td><span class="badge bg-primary">Buyer</span></td>
+                        <td>Expense / Direct Cost</td>
+                        <td><span class="entry-cr">Cr</span></td>
+                        <td>Goods Sold to External</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Buyer — Expense</strong></td>
+                        <td><span class="badge bg-primary">Buyer</span></td>
+                        <td>Expense</td>
+                        <td><span class="entry-cr">Cr</span></td>
+                        <td>Service / Expense</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td><strong>Seller — AR Intercompany</strong></td>
+                        <td><span class="badge bg-success">Seller</span></td>
+                        <td>Asset / Receivable</td>
+                        <td><span class="entry-cr">Cr</span></td>
+                        <td>Service / Expense</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seller — Services Revenue</strong></td>
+                        <td><span class="badge bg-success">Seller</span></td>
+                        <td>Income</td>
+                        <td><span class="entry-dr">Dr</span></td>
+                        <td>Service / Expense</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     BATCH WIZARD
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Generate Eliminations Wizard<span class="new-badge">Batch</span></h2>
+        <p class="text-center section-subtitle">
+            Process an entire period's worth of intercompany logs in a single action.
+        </p>
+        <div class="row g-4 mt-3 align-items-center">
+            <div class="col-md-5">
+                <div class="p-4 rounded-3" style="background: #fafafa; border: 2px solid #eee;">
+                    <h6 style="font-weight: 700;"><i class="fa fa-sliders-h me-2 erc-purple"></i>Wizard Parameters</h6>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li><strong>Company</strong> — seller or buyer company to filter by</li>
+                        <li><strong>Date From / Date To</strong> — invoice date range</li>
+                        <li><strong>Limit to Configs</strong> — optional: restrict to specific seller→buyer pairs</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2 text-center flow-arrow">
+                <i class="fa fa-arrow-right fa-2x erc-purple"></i>
+            </div>
+            <div class="col-md-5">
+                <div class="p-4 rounded-3" style="background: #e8f5e9; border: 2px solid #a5d6a7;">
+                    <h6 style="font-weight: 700;"><i class="fa fa-check-double me-2" style="color: #2e7d32;"></i>What Happens</h6>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li>Finds all <code>Draft / Pending</code> logs in range</li>
+                        <li>Skips logs already with a posted elimination</li>
+                        <li>Creates one draft <code>account.move</code> per log</li>
+                        <li>Sets log state to <code>Pending</code></li>
+                        <li>Returns a list of all generated entries for review</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SMART BUTTON & TRACEABILITY
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Full Traceability from the Invoice</h2>
+        <p class="text-center section-subtitle">
+            Every intercompany invoice carries a smart button showing the linked P&amp;L log — one click to the full elimination record.
+        </p>
+        <div class="row g-4 mt-3 justify-content-center">
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #f3e5f5; border: 1px solid #ce93d8;">
+                    <i class="fa fa-balance-scale fa-3x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 700;">Smart Button</h5>
+                    <p class="small text-muted">A <em>P&amp;L Log</em> smart button appears on the invoice form showing the count. Click to jump directly to the profit log, see all lines, margins, and the linked elimination entry.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #e3f2fd; border: 1px solid #90caf9;">
+                    <i class="fa fa-link fa-3x mb-3" style="color: #1565c0;"></i>
+                    <h5 style="font-weight: 700;">Linked Elimination Entry</h5>
+                    <p class="small text-muted">The profit log stores a direct reference to its <code>elimination_move_id</code>. From log to journal entry in one click. The entry's <code>ref</code> field also references the original invoice name.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4 rounded-3 h-100" style="background: #fff8e1; border: 1px solid #ffe082;">
+                    <i class="fa fa-history fa-3x mb-3" style="color: #f57f17;"></i>
+                    <h5 style="font-weight: 700;">State Tracking</h5>
+                    <p class="small text-muted">Log states: <strong>Draft</strong> (created, awaiting qty update) → <strong>Pending</strong> (elimination entry generated, not yet posted) → <strong>Posted</strong> → <strong>Reversed</strong>. Full lifecycle visible at a glance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     DEPENDENCY NOTE
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">Works Alongside <em>erc_intercompany_je</em></h2>
+        <p class="text-center section-subtitle">
+            This module is a companion — it extends, not replaces. Both modules can be used independently within a Odoo multi-company group.
+        </p>
+        <div class="row g-4 mt-3 align-items-start">
+            <div class="col-md-6">
+                <div class="p-4 rounded-3 h-100" style="background: #fafafa; border: 2px solid #71639e;">
+                    <h5 style="font-weight: 700; color: #71639e;"><i class="fa fa-plug me-2"></i>erc_intercompany_je (Required Dependency)</h5>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li>Detects IC partners via <code>is_intercompany</code> flag</li>
+                        <li>Provides default GL accounts on <code>res.company</code> (AR, AP, COGS, Service Revenue, etc.)</li>
+                        <li>Routes IC invoices to dedicated journals (ICS, ISS, ICP, ICE)</li>
+                        <li>Auto-Populate button reads these company defaults</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 rounded-3 h-100" style="background: #fafafa; border: 2px solid #28a745;">
+                    <h5 style="font-weight: 700; color: #28a745;"><i class="fa fa-plus-circle me-2"></i>erc_intercompany_profit_loss (This Module)</h5>
+                    <ul class="small text-muted ps-3 mt-3">
+                        <li>Adds profit log auto-creation on IC invoice post</li>
+                        <li>Tracks margin per line with 3 profit type formulas</li>
+                        <li>Generates draft elimination entries in ICPE journal</li>
+                        <li>Batch wizard, smart button, full state lifecycle</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <span class="badge rounded-pill px-4 py-2 me-2" style="background-color: #71639e; color: white; font-size: 0.9rem;">erc_intercompany_je</span>
+            <i class="fa fa-plus erc-purple mx-2"></i>
+            <span class="badge rounded-pill px-4 py-2" style="background-color: #28a745; color: white; font-size: 0.9rem;">erc_intercompany_profit_loss</span>
+            <span class="ms-3 text-muted small">= Complete intercompany accounting + elimination workflow</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     VISUAL PRODUCT TOUR (SCREENSHOTS)
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center mb-4 section-title">Visual Product Tour</h2>
+        <p class="text-center text-muted mb-5">Every screen your consolidation team will work with — from invoice post to posted elimination entry.</p>
+
+        <div class="row g-5 text-center">
+
+            <!-- 1 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">1. Company Settings — ICPE Journal</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_company_settings.png" alt="Company Settings — P&L Elimination Journal" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">Accounting › Settings › Intercompany P&amp;L Elimination — ICPE journal auto-created on install.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">2. Elimination Config per Company Pair</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_elimination_config.png" alt="Elimination Config — GL accounts per seller-buyer pair" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">7 GL accounts per seller→buyer pair. Auto-Populate copies defaults from erc_intercompany_je.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">3. Profit Log List</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_profit_log_list.png" alt="Profit Log List — all intercompany logs with state and totals" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">All IC profit logs — colour-coded by state (Draft / Pending / Posted), with IC amount, margin and unrealized totals.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">4. Profit Log Form — Header &amp; Totals</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_profit_log_form.png" alt="Profit Log Form — header totals and editable lines" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">Invoice reference, seller/buyer, total IC amount, total margin, unrealized profit — all computed and stored.</p>
+            </div>
+
+            <!-- 5 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">5. Profit Lines — Margin &amp; Qty Tracking</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_profit_lines.png" alt="Profit Lines — cost snapshot, margin %, profit type, unrealized calc" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">Per-line: cost price snapshot at post time, margin %, profit type, qty sold externally (editable), unrealized profit.</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">6. ICPE Journal — Draft Elimination Entry</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_elimination_entry.png" alt="ICPE Journal — draft elimination journal entry Dr/Cr" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">Auto-generated Dr/Cr lines in ICPE journal. Review, adjust if needed, then post. Ref links to original invoice.</p>
+            </div>
+
+            <!-- 7 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">7. Generate Eliminations Wizard</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_generate_wizard.png" alt="Generate Eliminations Wizard — batch by period" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">Batch-process an entire period: select company + date range + configs → generates all draft elimination entries at once.</p>
+            </div>
+
+            <!-- 8 -->
+            <div class="col-md-6 mb-5">
+                <h4 class="mb-3" style="color: #71639e; font-weight: 600;">8. Smart Button on Invoice</h4>
+                <div style="border: 2px solid #e0e0e0; border-radius: 10px; overflow: hidden; background: #fafafa;">
+                    <img src="./assets/screenshots/plc_smart_button.png" alt="Smart button on account.move linking to P&L log" style="max-width: 100%; display: block;"/>
+                </div>
+                <p class="small text-muted mt-2" style="font-style: italic;">P&amp;L Log smart button appears on every intercompany invoice — click to jump directly to the log and its elimination entry.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SUPPORT + CORPORATE -->
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="bg-white p-5 rounded-3 shadow-sm h-100" style="border: 1px solid #eee;">
+                <h2 class="mb-4" style="font-weight: 700; color: #71639e;">Professional Support</h2>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-3 p-2 rounded-circle" style="background-color: #25d36615;">
+                        <img src="./assets/icons/erc_whatsapp.png" width="24" height="24">
+                    </div>
+                    <div>
+                        <h6 class="mb-0">WhatsApp Support</h6>
+                        <a href="https://wa.me/5511922079570" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #25d366; font-weight: 600;">+55 11 92207 9570</a>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="me-3 p-2 rounded-circle" style="background-color: #71639e15;">
+                        <img src="./assets/icons/erc_mail.png" width="24" height="24">
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Email Inquiry</h6>
+                        <a href="mailto:admin@erc-implementors.com" style="text-decoration: none; color: #71639e; font-weight: 600;">admin@erc-implementors.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="bg-white p-5 rounded-3 shadow-sm h-100" style="border: 1px solid #eee;">
+                <h2 class="mb-4" style="font-weight: 700; color: #333;">Corporate Identity</h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item border-0 px-0 d-flex justify-content-between">
+                        <span class="text-muted">CNPJ:</span>
+                        <span class="fw-bold">12.353.398/0001-29</span>
+                    </li>
+                    <li class="list-group-item border-0 px-0 d-flex justify-content-between">
+                        <span class="text-muted">Owner:</span>
+                        <span class="fw-bold">Benedito Monteiro</span>
+                    </li>
+                    <li class="list-group-item border-0 px-0 d-flex justify-content-between">
+                        <span class="text-muted">Website:</span>
+                        <a href="https://www.erc-implementors.com" target="_blank" rel="noopener noreferrer" style="color: #71639e; text-decoration: none; font-weight: 600;">erc-implementors.com</a>
+                    </li>
+                </ul>
+                <p class="small text-muted mt-4">
+                    <i class="fa fa-map-marker-alt me-2"></i>
+                    Rua Professora Gioconda Mussolini, 239. Jd Rizzo, Sao Paulo - SP, Brazil
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     WHAT'S NEW IN v1.3 (PHASE 2)
+     ============================================================ -->
+<div class="container py-5">
+    <div class="bg-white p-5 rounded-3 shadow-sm" style="border: 1px solid #eee;">
+        <h2 class="text-center section-title">What&rsquo;s New in v1.3<span class="new-badge">Phase 2</span></h2>
+        <p class="text-center section-subtitle">
+            Ten enhancements that transform P&amp;L elimination from a manual process into an automated, auditable workflow.
+        </p>
+        <div class="row g-4 mt-3">
+            <!-- 1 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-tachometer-alt fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Dashboard KPIs</h5>
+                    <p class="text-muted small">Three live KPIs on the Settings page: <strong>pending log count</strong>, <strong>total unrealized profit</strong>, and <strong>last elimination date</strong>. Click the pending count to jump straight to the log list.</p>
+                </div>
+            </div>
+            <!-- 2 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-comments fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Chatter &amp; Tracking</h5>
+                    <p class="text-muted small">Profit logs inherit <code>mail.thread</code> with state tracking. Every elimination generation, reversal, and status change is <strong>posted to chatter</strong> for full team visibility and audit compliance.</p>
+                </div>
+            </div>
+            <!-- 3 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-magic fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Auto-Logging on Invoice Post</h5>
+                    <p class="text-muted small">Post an IC customer invoice and a profit log is <strong>created automatically</strong> in draft with all profit lines pre-populated. Toggle on/off per company. Eliminates 80%+ of manual data entry.</p>
+                </div>
+            </div>
+            <!-- 4 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-truck fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Stock Delivery Sync</h5>
+                    <p class="text-muted small">When the buyer ships goods to external customers, <strong>sold quantities update automatically</strong> on matching profit lines. FIFO matching within a 90-day window. Full picking traceability via M2M link.</p>
+                </div>
+            </div>
+            <!-- 5 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-boxes fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Inventory Tracking Fields</h5>
+                    <p class="text-muted small">Three new fields per profit line: <strong>qty sold external</strong>, <strong>qty still in stock</strong> (computed), and <strong>qty auto-sold</strong> (from deliveries). Dynamic unrealized profit based on what&rsquo;s actually still in inventory.</p>
+                </div>
+            </div>
+            <!-- 6 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-undo-alt fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Batch Reverse Wizard</h5>
+                    <p class="text-muted small">Reverse elimination entries for an entire period with one wizard. Filter by <strong>date range</strong> and seller/buyer config. Live preview of affected logs before execution. Skips errors, reports results.</p>
+                </div>
+            </div>
+            <!-- 7 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-file-pdf fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">PDF Elimination Report</h5>
+                    <p class="text-muted small">Comprehensive QWeb PDF report with product-level detail: qty, seller price, cost, margin %, profit type, unrealized amount. <strong>Auto-attached</strong> to elimination journal entries for audit.</p>
+                </div>
+            </div>
+            <!-- 8 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-balance-scale fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Smart Button on Invoices</h5>
+                    <p class="text-muted small">IC invoices show a <strong>smart button</strong> with the count of related profit logs. One click navigates to the filtered log list. Only visible when logs exist.</p>
+                </div>
+            </div>
+            <!-- 9 -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100 feature-card">
+                    <i class="fa fa-exchange-alt fa-2x mb-3 erc-purple"></i>
+                    <h5 style="font-weight: 600;">Cascade Reversals</h5>
+                    <p class="text-muted small">Reverse a source IC invoice and all related profit logs are <strong>automatically reversed</strong>. No orphaned elimination entries. Ensures GL consistency across the chain.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="container-fluid py-5 mt-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 30%, #fff3e0 70%, #f3e5f5 100%); border-top: 3px solid #71639e;">
+    <div class="container text-center">
+        <img src="icon.png" style="width: 60px; height: 60px; margin-bottom: 20px;" alt="ERC Logo">
+        <h5 style="letter-spacing: 1px; font-weight: 700; color: #333;">ERC IMPLEMENTORS LTDA</h5>
+        <p class="small mt-2" style="color: #666;">Professional Odoo Solutions &amp; Localization Experts</p>
+        <div class="mt-3 mb-3">
+            <span class="badge rounded-pill px-3 py-2 me-1" style="background-color: #71639e; color: white; font-weight: 600;">Odoo 19</span>
+            <span class="badge rounded-pill px-3 py-2 me-1" style="background-color: #28a745; color: white; font-weight: 600;">Enterprise Ready</span>
+            <span class="badge rounded-pill px-3 py-2" style="background-color: #ff6b35; color: white; font-weight: 600;">Companion Module</span>
+        </div>
+        <p class="small mt-3" style="color: #888;">&copy; 2026 ERC Implementors. All Rights Reserved. | CNPJ: 12.353.398/0001-29</p>
+    </div>
+</div>
+
+</body>
+</html>

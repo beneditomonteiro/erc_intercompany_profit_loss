@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_erc_intercompany_plc_readonly,erc.intercompany.plc.readonly,model_erc_intercompany_plc,account.group_account_readonly,1,0,0,0
+access_erc_intercompany_plc_manager,erc.intercompany.plc.manager,model_erc_intercompany_plc,account.group_account_manager,1,1,1,0
+access_erc_intercompany_plc_system,erc.intercompany.plc.system,model_erc_intercompany_plc,base.group_system,1,1,1,1
+access_erc_intercompany_profit_log_readonly,erc.intercompany.profit.log.readonly,model_erc_intercompany_profit_log,account.group_account_readonly,1,0,0,0
+access_erc_intercompany_profit_log_manager,erc.intercompany.profit.log.manager,model_erc_intercompany_profit_log,account.group_account_manager,1,1,1,0
+access_erc_intercompany_profit_log_system,erc.intercompany.profit.log.system,model_erc_intercompany_profit_log,base.group_system,1,1,1,1
+access_erc_intercompany_profit_line_readonly,erc.intercompany.profit.line.readonly,model_erc_intercompany_profit_line,account.group_account_readonly,1,0,0,0
+access_erc_intercompany_profit_line_manager,erc.intercompany.profit.line.manager,model_erc_intercompany_profit_line,account.group_account_manager,1,1,1,0
+access_erc_intercompany_profit_line_system,erc.intercompany.profit.line.system,model_erc_intercompany_profit_line,base.group_system,1,1,1,1
+access_wizard_generate_elimination_manager,wizard.generate.elimination.manager,model_wizard_generate_elimination,account.group_account_manager,1,1,1,1
+access_wizard_generate_elimination_system,wizard.generate.elimination.system,model_wizard_generate_elimination,base.group_system,1,1,1,1
+access_wizard_reverse_elimination_manager,wizard.reverse.elimination.manager,model_wizard_reverse_elimination,account.group_account_manager,1,1,1,1
+access_wizard_reverse_elimination_system,wizard.reverse.elimination.system,model_wizard_reverse_elimination,base.group_system,1,1,1,1

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- PROFIT LOG — LIST VIEW -->
+    <record id="view_erc_intercompany_profit_log_list" model="ir.ui.view">
+        <field name="name">erc.intercompany.profit.log.list</field>
+        <field name="model">erc.intercompany.profit.log</field>
+        <field name="arch" type="xml">
+            <list string="Intercompany P&amp;L Profit Logs" decoration-muted="state == 'reversed'" decoration-success="state == 'posted'" decoration-info="state == 'pending'">
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="invoice_date"/>
+                <field name="seller_company_id"/>
+                <field name="buyer_company_id"/>
+                <field name="total_intercompany_amount" sum="Total IC" widget="monetary"/>
+                <field name="total_margin_amount" sum="Total Margin" widget="monetary"/>
+                <field name="total_unrealized_profit" sum="Unrealized" widget="monetary"/>
+                <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'pending'" decoration-muted="state in ('draft', 'reversed')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- PROFIT LOG — FORM VIEW -->
+    <record id="view_erc_intercompany_profit_log_form" model="ir.ui.view">
+        <field name="name">erc.intercompany.profit.log.form</field>
+        <field name="model">erc.intercompany.profit.log</field>
+        <field name="arch" type="xml">
+            <form string="Intercompany P&amp;L Profit Log">
+                <header>
+                    <button
+                        name="action_generate_elimination"
+                        string="Generate Elimination Entry"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state not in ('draft', 'pending')"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,posted"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Invoice">
+                            <field name="name" readonly="True"/>
+                            <field name="invoice_id"/>
+                            <field name="invoice_date"/>
+                        </group>
+                        <group string="Companies">
+                            <field name="seller_company_id" readonly="True"/>
+                            <field name="buyer_company_id" readonly="True"/>
+                            <field name="config_id"/>
+                        </group>
+                    </group>
+                    <group string="Totals">
+                        <group>
+                            <field name="total_intercompany_amount" widget="monetary"/>
+                            <field name="total_margin_amount" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="total_unrealized_profit" widget="monetary"/>
+                            <field name="elimination_move_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Profit Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id" readonly="True"/>
+                                    <field name="description"/>
+                                    <field name="qty_invoiced" readonly="True"/>
+                                    <field name="seller_unit_price" readonly="True"/>
+                                    <field name="seller_cost_price" readonly="True"/>
+                                    <field name="seller_margin_amount" readonly="True"/>
+                                    <field name="seller_margin_pct" readonly="True" string="Margin %"/>
+                                    <field name="profit_type"/>
+                                    <field name="qty_sold_external"/>
+                                    <field name="qty_still_in_stock" readonly="True"/>
+                                    <field name="unrealized_profit" readonly="True" string="Unrealized"/>
+                                    <field name="qty_auto_sold" readonly="True" optional="show"/>
+                                    <field name="picking_ids" widget="many2many_tags" readonly="True" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- PROFIT LINE — standalone list (for reference) -->
+    <record id="view_erc_intercompany_profit_line_list" model="ir.ui.view">
+        <field name="name">erc.intercompany.profit.line.list</field>
+        <field name="model">erc.intercompany.profit.line</field>
+        <field name="arch" type="xml">
+            <list string="Profit Lines">
+                <field name="profit_log_id"/>
+                <field name="product_id"/>
+                <field name="profit_type"/>
+                <field name="qty_invoiced"/>
+                <field name="seller_unit_price"/>
+                <field name="seller_margin_amount"/>
+                <field name="qty_sold_external"/>
+                <field name="qty_still_in_stock"/>
+                <field name="unrealized_profit"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_erc_intercompany_profit_log" model="ir.actions.act_window">
+        <field name="name">Profit Logs</field>
+        <field name="res_model">erc.intercompany.profit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No profit logs yet
+            </p>
+            <p>
+                Profit logs are created automatically when intercompany invoices are posted
+                (if Auto-log is enabled in company settings).
+            </p>
+        </field>
+    </record>
+
+    <!-- WIZARD ACTION -->
+    <record id="action_wizard_generate_elimination" model="ir.actions.act_window">
+        <field name="name">Generate Eliminations</field>
+        <field name="res_model">wizard.generate.elimination</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- WIZARD FORM VIEW -->
+    <record id="view_wizard_generate_elimination_form" model="ir.ui.view">
+        <field name="name">wizard.generate.elimination.form</field>
+        <field name="model">wizard.generate.elimination</field>
+        <field name="arch" type="xml">
+            <form string="Generate P&amp;L Elimination Entries">
+                <group>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="config_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="action_generate"
+                        string="Generate"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- SMART BUTTON: account.move → P&L Logs -->
+    <record id="view_account_move_plc_button" model="ir.ui.view">
+        <field name="name">account.move.plc.button</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_plc_logs"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-balance-scale"
+                    invisible="plc_log_count == 0"
+                >
+                    <field name="plc_log_count" widget="statinfo" string="P&amp;L Log"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

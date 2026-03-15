@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_plc_profit_log_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h2>Intercompany P&amp;L Profit Log</h2>
+                                <p>
+                                    <strong>Reference:</strong> <t t-out="doc.name"/><br/>
+                                    <strong>Invoice:</strong> <t t-out="doc.invoice_id.name or ''"/><br/>
+                                    <strong>Invoice Date:</strong>
+                                    <t t-out="doc.invoice_date and doc.invoice_date.strftime('%d/%m/%Y') or ''"/>
+                                </p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p>
+                                    <strong>Seller:</strong> <t t-out="doc.seller_company_id.name or ''"/><br/>
+                                    <strong>Buyer:</strong> <t t-out="doc.buyer_company_id.name or ''"/><br/>
+                                    <strong>Status:</strong>
+                                    <span t-attf-class="badge #{doc.state == 'posted' and 'bg-success' or doc.state == 'pending' and 'bg-info' or 'bg-secondary'}">
+                                        <t t-out="dict(doc._fields['state'].selection).get(doc.state, doc.state)"/>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Profit Lines Table -->
+                        <table class="table table-sm table-bordered o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Seller Price</th>
+                                    <th class="text-end">Cost</th>
+                                    <th class="text-end">Margin %</th>
+                                    <th>Profit Type</th>
+                                    <th class="text-end">Unrealized Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids" t-as="line">
+                                    <tr>
+                                        <td><t t-out="line.description or (line.product_id.name if line.product_id else '')"/></td>
+                                        <td class="text-end"><t t-out="'%.4f' % line.qty_invoiced"/></td>
+                                        <td class="text-end"><t t-out="'%.2f' % line.seller_unit_price"/></td>
+                                        <td class="text-end"><t t-out="'%.2f' % line.seller_cost_price"/></td>
+                                        <td class="text-end"><t t-out="'%.2f' % line.seller_margin_pct"/>%</td>
+                                        <td><t t-out="dict(line._fields['profit_type'].selection).get(line.profit_type, line.profit_type)"/></td>
+                                        <td class="text-end"><t t-out="'%.2f' % line.unrealized_profit"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Totals</th>
+                                    <th class="text-end"><t t-out="'%.2f' % doc.total_intercompany_amount"/></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="text-end"><t t-out="'%.2f' % doc.total_unrealized_profit"/></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- Summary -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <t t-if="doc.elimination_move_id">
+                                    <p>
+                                        <strong>Elimination Entry:</strong>
+                                        <t t-out="doc.elimination_move_id.name or ''"/>
+                                        (<t t-out="doc.elimination_move_id.state"/>)
+                                    </p>
+                                </t>
+                            </div>
+                            <div class="col-6 text-end">
+                                <table class="table table-sm w-auto ms-auto">
+                                    <tr>
+                                        <td><strong>Total IC Amount:</strong></td>
+                                        <td class="text-end"><t t-out="'%.2f' % doc.total_intercompany_amount"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Margin:</strong></td>
+                                        <td class="text-end"><t t-out="'%.2f' % doc.total_margin_amount"/></td>
+                                    </tr>
+                                    <tr class="fw-bold">
+                                        <td>Total Unrealized:</td>
+                                        <td class="text-end"><t t-out="'%.2f' % doc.total_unrealized_profit"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

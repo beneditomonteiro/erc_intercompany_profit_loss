@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- WIZARD ACTION -->
+    <record id="action_wizard_reverse_elimination" model="ir.actions.act_window">
+        <field name="name">Reverse Eliminations</field>
+        <field name="res_model">wizard.reverse.elimination</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- WIZARD FORM VIEW -->
+    <record id="view_wizard_reverse_elimination_form" model="ir.ui.view">
+        <field name="name">wizard.reverse.elimination.form</field>
+        <field name="model">wizard.reverse.elimination</field>
+        <field name="arch" type="xml">
+            <form string="Reverse P&amp;L Elimination Entries">
+                <group>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="config_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <group string="Preview — Logs to Reverse">
+                    <field name="log_ids" widget="many2many_tags" readonly="True"/>
+                </group>
+                <footer>
+                    <button
+                        name="action_reverse"
+                        string="Reverse"
+                        type="object"
+                        class="btn-danger"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

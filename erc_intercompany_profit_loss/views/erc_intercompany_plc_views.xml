@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- LIST VIEW -->
+    <record id="view_erc_intercompany_plc_list" model="ir.ui.view">
+        <field name="name">erc.intercompany.plc.list</field>
+        <field name="model">erc.intercompany.plc</field>
+        <field name="arch" type="xml">
+            <list string="P&amp;L Elimination Configs">
+                <field name="seller_company_id"/>
+                <field name="buyer_company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_erc_intercompany_plc_form" model="ir.ui.view">
+        <field name="name">erc.intercompany.plc.form</field>
+        <field name="model">erc.intercompany.plc</field>
+        <field name="arch" type="xml">
+            <form string="P&amp;L Elimination Config">
+                <header>
+                    <button
+                        name="action_auto_populate"
+                        string="Auto-Populate Accounts"
+                        type="object"
+                        class="btn-secondary"
+                        help="Copy GL account defaults from erc_intercompany_je company settings."
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Companies">
+                            <field name="seller_company_id"/>
+                            <field name="buyer_company_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Buyer-Side GL Accounts">
+                        <group>
+                            <field name="buyer_ap_account_id"/>
+                            <field name="buyer_inventory_account_id"/>
+                            <field name="buyer_sales_account_id"/>
+                        </group>
+                        <group>
+                            <field name="buyer_cogs_account_id"/>
+                            <field name="buyer_expense_account_id"/>
+                        </group>
+                    </group>
+                    <group string="Seller-Side GL Accounts">
+                        <group>
+                            <field name="seller_ar_account_id"/>
+                            <field name="seller_service_revenue_account_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_erc_intercompany_plc" model="ir.actions.act_window">
+        <field name="name">Elimination Config</field>
+        <field name="res_model">erc.intercompany.plc</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first P&amp;L elimination configuration
+            </p>
+            <p>
+                Define GL accounts for each seller → buyer company pair to enable
+                intercompany profit elimination journal entries.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Default parameter: journal code for ICPE journal creation hint -->
+        <record id="param_icpe_journal_code" model="ir.config_parameter">
+            <field name="key">erc_intercompany_profit_loss.default_journal_code</field>
+            <field name="value">ICPE</field>
+        </record>
+        <!-- Default parameter: auto-log on IC invoice post (informational; actual default is on res.company field) -->
+        <record id="param_icpe_auto_log_default" model="ir.config_parameter">
+            <field name="key">erc_intercompany_profit_loss.auto_log_on_post_default</field>
+            <field name="value">True</field>
+        </record>
+        <!-- Ensure ICPE journal exists and is linked on every upgrade -->
+        <function model="res.company" name="_plc_ensure_icpe_journal"/>
+    </data>
+</odoo>
