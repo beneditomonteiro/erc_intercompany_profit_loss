@@ -1,7 +1,7 @@
 # ERC Intercompany Profit/Loss Elimination (v19)
 **Track and Eliminate Unrealized Intercompany Profit from Consolidated Statements**
 
-**Version:** 19.0.1.3.0 | **License:** OPL-1 (Odoo Proprietary License) | **Price:** $30 USD
+**Version:** 19.0.1.3.0 | **License:** OPL-1 (Odoo Proprietary License) | **Price:** $99 USD
 
 ---
 
