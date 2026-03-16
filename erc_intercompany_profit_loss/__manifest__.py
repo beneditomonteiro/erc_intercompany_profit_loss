@@ -35,7 +35,7 @@ Phase 2 (v1.3):
     "application": False,
     "auto_install": False,
     "installable": True,
-    "price": 99.0,
+    "price": 149.0,
     "currency": "USD",
     "images": [
         "static/description/banner.png",
